@@ -28,9 +28,15 @@ class EpiCMS_BoxTest extends PHPUnit_Framework_TestCase {
         $this->assertInstanceOf('EpiCMS\Driver', Box::driver());
     }
 
+    public function testPrepareInstance() {
+        $box = Box::prepare('namespace:test-1:text', 'test');
+        $this->assertEquals('namespace:test-1:text', $box->key());
+        $this->assertEquals('test', $box->value());
+    }
+
     public function testLoadName() {
         $box = Box::text('namespace', 'test-1');
-        $this->assertEquals('text:namespace:test-1', $box->key());
+        $this->assertEquals('namespace:test-1:text', $box->key());
     }
 
     public function testLoadValueEmptyData() {
@@ -40,7 +46,7 @@ class EpiCMS_BoxTest extends PHPUnit_Framework_TestCase {
 
     public function testLoadValue() {
         $box = Box::text('namespace', 'test-1');
-        $this->assertEquals('test', $box->value());
+        $this->assertEquals('test1', $box->value());
     }
 
     public function testSetValue() {
@@ -53,13 +59,13 @@ class EpiCMS_BoxTest extends PHPUnit_Framework_TestCase {
         $box = Box::text('namespace', 'test-1');
         $box->value('test-3');
         $box->save();
-        $this->assertEquals('test-3', Box::driver()->get('text:namespace:test-1'));
+        $this->assertEquals('test-3', Box::driver()->get('namespace:test-1:text'));
     }
 
     public function testDeleteKey() {
         $box = Box::text('namespace', 'test-1');
         $box->remove();
-        $this->assertEquals(null, Box::driver()->get('text:namespace:test-1'));
+        $this->assertEquals(null, Box::driver()->get('namespace:test-1:text'));
     }
 
 }
