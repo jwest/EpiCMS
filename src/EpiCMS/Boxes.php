@@ -19,7 +19,7 @@ class Boxes extends \ArrayIterator {
     }
 
     protected function load($key) {
-        return Box::driver()->getAll($key);
+        return Box::driver()->search($key);
     }
 
     public function current() {

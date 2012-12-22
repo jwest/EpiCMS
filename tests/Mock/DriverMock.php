@@ -15,7 +15,7 @@ class DriverMock extends \EpiCMS\Driver {
         return isset($this->data[$key]) ? $this->data[$key] : null;
     }
 
-    public function getAll($key) {
+    public function search($key) {
         $pattern = $this->preparePatter($key);
         $keys = array_filter(array_keys($this->data), function ($element) use ($pattern){
             return (bool)preg_match($pattern, $element);

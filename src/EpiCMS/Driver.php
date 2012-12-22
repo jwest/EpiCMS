@@ -6,7 +6,7 @@ abstract class Driver {
 
     abstract public function get($key);
 
-    abstract public function getAll($key);
+    abstract public function search($key);
 
     abstract public function set($key, $value);
 
