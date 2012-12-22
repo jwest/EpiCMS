@@ -8,14 +8,18 @@ class Boxes extends \ArrayIterator {
 
     protected $namespace;
 
-    public function __construct($namespace) {
+    public function __construct($namespace, $pattern = null) {
         $this->namespace = $namespace;
-        $boxes = $this->load($namespace);
+        $boxes = $this->load($this->prepareKey($namespace, $pattern));
         parent::__construct($boxes);
     }
 
-    protected function load($namespace) {
-        return Box::driver()->getAll($namespace.':*');
+    protected function prepareKey($namespace, $pattern) {
+        return $namespace . ($pattern != null ? ':' . $pattern : ':') . '*';
+    }
+
+    protected function load($key) {
+        return Box::driver()->getAll($key);
     }
 
     public function current() {

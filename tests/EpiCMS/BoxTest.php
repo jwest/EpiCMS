@@ -29,9 +29,14 @@ class EpiCMS_BoxTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testPrepareInstance() {
-        $box = Box::prepare('namespace:test-1:text', 'test');
+        $box = Box::prepare('namespace:test-1:text', 'test3');
         $this->assertEquals('namespace:test-1:text', $box->key());
-        $this->assertEquals('test', $box->value());
+        $this->assertEquals('test3', $box->value());
+    }
+
+    public function testPrepareInvalidInstance() {
+        $this->setExpectedException('\InvalidArgumentException', 'invalid key: \'namespacetest-1:text\'');
+        Box::prepare('namespacetest-1:text');
     }
 
     public function testLoadName() {

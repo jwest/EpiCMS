@@ -10,17 +10,17 @@ abstract class Box {
     protected $value;
 
     public static function prepare($key, $value = null) {
-        list($namespace, $key, $type) = explode(':', $key);
-        $box = self::$type($namespace, $key);
-        $box->value($value);
-        return $box;
+        $params = explode(':', $key);
+        if (count($params) !== 3)
+            throw new \InvalidArgumentException('invalid key: \''.$key.'\'');
+        return self::$params[2]($params[0], $params[1], $value);
     }
 
     public static function __callStatic($type, array $args) {
         $type = '\\EpiCMS\\Box::'.strtoupper($type);
         self::validation($type, $args);
         $typeClass = constant($type);
-        return new $typeClass($args[0], $args[1]);
+        return new $typeClass($args[0], $args[1], isset($args[2]) ? $args[2] : null);
     }
 
     protected static function validation($typeClass, array $args) {
@@ -30,10 +30,10 @@ abstract class Box {
             throw new \InvalidArgumentException('invalid parameters count');
     }
 
-    public function __construct($namespace, $name) {
+    public function __construct($namespace, $name, $value = null) {
         $typeName = $this->prepareTypeName(get_class($this));
         $this->key = $this->prepareKey($typeName, $namespace, $name);
-        $this->value = $this->load($this->key);
+        $this->value = $value !== null ? $value : $this->load($this->key);
     }
 
     public function key() {
