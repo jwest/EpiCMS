@@ -12,13 +12,23 @@ abstract class Box {
     protected static $driver = null;
 
     public static function driver(Driver $driver = null) {
-        if ($driver === null)
-            return self::$driver;
-        self::$driver = $driver;
+        if ($driver !== null)
+            self::$driver = $driver;
+        return self::$driver;
     }
 
-    public static function load($type, $namespace, $name) {
-        return new $type($type::NAME, $namespace, $name);
+    public static function __callStatic($type, array $args) {
+        $typeClass = '\\EpiCMS\\Box::'.strtoupper($type);
+        self::validation($typeClass, $args);
+        $type = constant($typeClass);
+        return new $type($type::NAME, $args[0], $args[1]);
+    }
+
+    protected static function validation($typeClass, array $args) {
+        if (!defined($typeClass))
+            throw new \InvalidArgumentException('invalid box type: \''.$typeClass.'\'');
+        if (count($args) < 2)
+            throw new \InvalidArgumentException('invalid parameters count');
     }
 
     public function __construct($typeName, $namespace, $name) {
@@ -36,19 +46,19 @@ abstract class Box {
         return $this->value;
     }
 
-    protected function prepareKey($typeName, $namespace, $name) {
-        return $typeName.':'.$namespace.':'.$name;
-    }
-
-    protected function prepareValue($key) {
-        return self::driver()->get($key);
-    }
-
     public function save() {
         self::driver()->set($this->key, $this->value);
     }
 
     public function remove() {
         self::driver()->del($this->key);
+    }
+
+    protected function prepareKey($typeName, $namespace, $name) {
+        return $typeName.':'.$namespace.':'.$name;
+    }
+
+    protected function prepareValue($key) {
+        return self::driver()->get($key);
     }
 }

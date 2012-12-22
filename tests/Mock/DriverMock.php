@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * mock storage for phpunit
+ */
 class DriverMock extends \EpiCMS\Driver {
 
     protected $data = array(
