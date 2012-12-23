@@ -68,6 +68,6 @@ class EpiCMS_Driver_FileTest extends PHPUnit_Framework_TestCase {
 
     public function testGetAllWithPatternSecound() {
         $driver = new File('tests/data/storage.dat');
-        $this->assertCount(1, $driver->search('key*2'));
+        $this->assertCount(3, $driver->search('key*es*'));
     }
 }

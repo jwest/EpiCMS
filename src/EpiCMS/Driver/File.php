@@ -49,7 +49,7 @@ class File extends \EpiCMS\Driver {
     }
 
     protected function preparePattern($key) {
-        return '/'.str_replace('*', '(.)+', $key).'/';
+        return '/^'.str_replace('*', '(.)+', $key).'$/';
     }
 
 }
