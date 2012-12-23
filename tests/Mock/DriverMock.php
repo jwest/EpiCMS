@@ -9,7 +9,7 @@ class DriverMock extends \EpiCMS\Driver {
         'namespace2:test-1:text'  => 'test3',
         'namespace2:test-2:image' => 'test4',
         'namespace2:test-3:bool'  => 'test5',
-        'page:index:text'         => 'main-page',
+        'page:main:text'          => 'main-page',
         'page:test-page:text'     => 'test-page',
     );
 

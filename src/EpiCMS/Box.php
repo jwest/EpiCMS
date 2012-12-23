@@ -6,6 +6,8 @@ abstract class Box {
 
     const TEXT = '\EpiCMS\Box\Text';
 
+    protected $namespace;
+    protected $name;
     protected $key;
     protected $value;
 
@@ -32,8 +34,18 @@ abstract class Box {
 
     public function __construct($namespace, $name, $value = null) {
         $typeName = $this->prepareTypeName(get_class($this));
+        $this->namespace = $namespace;
+        $this->name = $name;
         $this->key = $this->prepareKey($typeName, $namespace, $name);
         $this->value = $value !== null ? $value : $this->load($this->key);
+    }
+
+    public function name() {
+        return $this->name;
+    }
+
+    public function ns() {
+        return $this->namespace;
     }
 
     public function key() {
@@ -44,6 +56,10 @@ abstract class Box {
         if ($value !== null)
             $this->value = $value;
         return $this->value;
+    }
+
+    public function __toString() {
+        return (string) $this->value;
     }
 
     public function save() {

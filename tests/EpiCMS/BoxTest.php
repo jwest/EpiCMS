@@ -39,9 +39,19 @@ class EpiCMS_BoxTest extends PHPUnit_Framework_TestCase {
         Box::prepare('namespacetest-1:text');
     }
 
-    public function testLoadName() {
+    public function testGetKey() {
         $box = Box::text('namespace', 'test-1');
         $this->assertEquals('namespace:test-1:text', $box->key());
+    }
+
+    public function testGetName() {
+        $box = Box::text('namespace', 'test-1');
+        $this->assertEquals('test-1', $box->name());
+    }
+
+    public function testGetNamespace() {
+        $box = Box::text('namespace', 'test-1');
+        $this->assertEquals('namespace', $box->ns());
     }
 
     public function testLoadValueEmptyData() {
@@ -52,6 +62,11 @@ class EpiCMS_BoxTest extends PHPUnit_Framework_TestCase {
     public function testLoadValue() {
         $box = Box::text('namespace', 'test-1');
         $this->assertEquals('test1', $box->value());
+    }
+
+    public function testToString() {
+        $box = Box::text('namespace', 'test-1');
+        $this->assertEquals('test1', $box->__toString());
     }
 
     public function testSetValue() {
