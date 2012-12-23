@@ -21,10 +21,17 @@ abstract class Box {
     }
 
     public static function __callStatic($type, array $args) {
-        $type = '\\EpiCMS\\Box::'.strtoupper($type);
         self::validation($type, $args);
-        $typeClass = constant($type);
+        $typeClass = constant(self::prepareClassName($type));
         return new $typeClass($args[0], $args[1], isset($args[2]) ? $args[2] : null);
+    }
+
+    protected static function validation($type, array $args) {
+        $typeClass = self::prepareClassName($type);
+        if (!defined($typeClass))
+            throw new \InvalidArgumentException('invalid box type: \''.$typeClass.'\'');
+        if (count($args) < 2)
+            throw new \InvalidArgumentException('invalid parameters count');
     }
 
     protected static function prepareTypeName($typeClass) {
@@ -35,11 +42,8 @@ abstract class Box {
         return $typeName;
     }
 
-    protected static function validation($typeClass, array $args) {
-        if (!defined($typeClass))
-            throw new \InvalidArgumentException('invalid box type: \''.$typeClass.'\'');
-        if (count($args) < 2)
-            throw new \InvalidArgumentException('invalid parameters count');
+    protected static function prepareClassName($type) {
+        return '\\EpiCMS\\Box::'.strtoupper($type);
     }
 
     public function __construct($namespace, $name, $value = null) {
