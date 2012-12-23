@@ -25,7 +25,7 @@ class EpiCMS_Module_EditAllTest extends PHPUnit_Framework_TestCase {
         $app->add(new EditAll());
         $app->run();
         $output = json_decode($app->response()->body());
-        $this->assertCount(6, $output->boxes);
+        $this->assertEquals((object)Box::driver()->dump(), $output->boxes);
     }
 
     public function setUp() {
