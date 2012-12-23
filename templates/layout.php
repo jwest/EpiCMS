@@ -6,7 +6,7 @@
     </head>
     <body>
         <header>
-            <h1>EpiCMS Demo</h1>
+            <h1>EpiCMS <?php echo Box::text('layout', 'header'); ?></h1>
             <h3><?php echo $page->value(); ?></h3>
         </header>
         <div class="menu">

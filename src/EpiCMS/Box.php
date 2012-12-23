@@ -5,6 +5,7 @@ namespace EpiCMS;
 abstract class Box {
 
     const TEXT = '\EpiCMS\Box\Text';
+    const UNDEFINED = '\EpiCMS\Box\Undefined';
 
     protected $namespace;
     protected $name;

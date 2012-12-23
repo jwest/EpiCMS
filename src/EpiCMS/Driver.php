@@ -12,4 +12,6 @@ abstract class Driver {
 
     abstract public function del($key);
 
+    abstract public function dump();
+
 }

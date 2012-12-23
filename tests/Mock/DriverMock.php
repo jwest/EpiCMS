@@ -37,4 +37,8 @@ class DriverMock extends \EpiCMS\Driver {
         unset($this->data[$key]);
     }
 
+    public function dump() {
+        return $this->data;
+    }
+
 }

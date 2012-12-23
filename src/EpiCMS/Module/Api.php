@@ -6,8 +6,7 @@ use EpiCMS\Box;
 
 class Api extends \Slim\Middleware {
 
-    public function call()
-    {
+    public function call() {
         $this->app->post('/admin/:type/:namespace/:key', array($this, 'post'));
         $this->app->get('/admin/:type/:namespace/:key', array($this, 'get'));
         $this->next->call();
