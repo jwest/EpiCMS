@@ -13,10 +13,11 @@ abstract class Box {
     protected $value;
 
     public static function prepare($key, $value = null) {
+        $typeName = self::prepareTypeName(get_called_class());
         $params = explode(':', $key);
-        if (count($params) !== 3)
+        if (count($params) !== 2)
             throw new \InvalidArgumentException('invalid key: \''.$key.'\'');
-        return self::$params[2]($params[0], $params[1], $value);
+        return self::$typeName($params[0], $params[1], $value);
     }
 
     public static function __callStatic($type, array $args) {
@@ -24,6 +25,14 @@ abstract class Box {
         self::validation($type, $args);
         $typeClass = constant($type);
         return new $typeClass($args[0], $args[1], isset($args[2]) ? $args[2] : null);
+    }
+
+    protected static function prepareTypeName($typeClass) {
+        $typeNameParts = explode('\\', $typeClass);
+        $typeName = strtolower($typeNameParts[count($typeNameParts)-1]);
+        if ($typeName === 'box')
+            return 'undefined';
+        return $typeName;
     }
 
     protected static function validation($typeClass, array $args) {
@@ -34,10 +43,9 @@ abstract class Box {
     }
 
     public function __construct($namespace, $name, $value = null) {
-        $typeName = $this->prepareTypeName(get_class($this));
         $this->namespace = $namespace;
         $this->name = $name;
-        $this->key = $this->prepareKey($typeName, $namespace, $name);
+        $this->key = $this->prepareKey($namespace, $name);
         $this->value = $value !== null ? $value : $this->load($this->key);
     }
 
@@ -59,6 +67,10 @@ abstract class Box {
         return $this->value;
     }
 
+    public function hash() {
+        return md5($this->key.$this->value);
+    }
+
     public function __toString() {
         return (string) $this->value;
     }
@@ -71,14 +83,8 @@ abstract class Box {
         self::driver()->del($this->key);
     }
 
-    private function prepareTypeName($typeClass) {
-        $typeNameParts = explode('\\', $typeClass);
-        $typeName = $typeNameParts[count($typeNameParts)-1];
-        return strtolower($typeName);
-    }
-
-    protected function prepareKey($typeName, $namespace, $name) {
-        return $namespace.':'.$name.':'.$typeName;
+    protected function prepareKey($namespace, $name) {
+        return $namespace.':'.$name;
     }
 
     protected function load($key) {

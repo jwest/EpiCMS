@@ -1,38 +1,31 @@
 <?php
 
-use EpiCMS\Module\Api;
+use EpiCMS\Module\EditAll;
 use EpiCMS\Box;
 
-class EpiCMS_Module_ApiTest extends PHPUnit_Framework_TestCase {
+class EpiCMS_Module_EditAllTest extends PHPUnit_Framework_TestCase {
 
     public function testGetRouteStatus() {
-        $this->checkStatusCode('GET', '/admin/namespace/test-1', 200);
+        $this->checkStatusCode('GET', '/admin/editAll', 200);
     }
 
-    public function testPostRouteStatus() {
-        $this->checkStatusCode('POST', '/admin/namespace/test-1', 200);
-    }
-
-    public function testGetRouteContent() {
-        $this->checkOutput('GET', '/admin/namespace/test-1', '{"key":"namespace:test-1","value":"test1"}');
-    }
-
-    public function testPostRouteContent() {
-        $this->checkOutput('POST', '/admin/namespace/test-1', '{"status":"ok","value":"test1"}');
+    public function testGetRouteOutput() {
+        $this->checkOutput('GET', '/admin/editAll');
     }
 
     private function checkStatusCode($method, $route, $status) {
         $app = $this->slimMock($method, $route);
-        $app->add(new Api());
+        $app->add(new EditAll());
         $app->run();
         $this->assertEquals($status, $app->response()->status());
     }
 
-    public function checkOutput($method, $route, $output) {
+    private function checkOutput($method, $route) {
         $app = $this->slimMock($method, $route);
-        $app->add(new Api());
+        $app->add(new EditAll());
         $app->run();
-        $this->assertEquals($output, $app->response()->body());
+        $output = json_decode($app->response()->body());
+        $this->assertCount(6, $output->boxes);
     }
 
     public function setUp() {
@@ -65,9 +58,15 @@ class EpiCMS_Module_ApiTest extends PHPUnit_Framework_TestCase {
             'slim.input' => '',
             'slim.errors' => NULL,
         ));
-        $app = new \Slim\Slim(array(
+
+        $app = $this->getMock('\Slim\Slim', array('render'), array(array(
             'log.writer' => new \Slim\LogWriter(fopen('php://stderr', 'w')),
-        ));
+        )));
+
+        $app->expects($this->any())
+            ->method('render')
+            ->with(null, $this->arrayHasKey('page'));
+
         $app->setName(md5($method.$route));
         return $app;
     }

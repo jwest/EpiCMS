@@ -27,7 +27,7 @@ class EpiCMS_BoxesTest extends PHPUnit_Framework_TestCase {
 
     public function testLoadNamespacesInstanceOfBox() {
         foreach (new Boxes('namespace') as $box)
-            $this->assertInstanceOf('EpiCMS\Box', $box);
+            $this->assertInstanceOf('EpiCMS\Box\Undefined', $box);
     }
 
 }
