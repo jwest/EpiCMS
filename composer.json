@@ -2,7 +2,8 @@
     "name": "jwest/epicms",
     "description": "Very micro cms with micro framework slim, uses key-values storage",
     "require": {
-        "slim/slim": "2.2.0"
+        "slim/slim": "2.2.0",
+        "jwest/strong": "v1"
     },
     "authors": [
         {

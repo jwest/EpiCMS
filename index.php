@@ -7,6 +7,9 @@ Box::driver(new \EpiCMS\Driver\File('storage.dat'));
 
 $app = new \Slim\Slim();
 $app->config('layout.default', 'layout.php');
+$app->config('system.users', array(
+    'admin' => 'demo',
+));
 
 $app->add(new \EpiCMS\Module\Api());
 $app->add(new \EpiCMS\Module\EditAll());
