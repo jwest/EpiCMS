@@ -5,3 +5,4 @@ date_default_timezone_set('Europe/Warsaw');
 
 require 'vendor/autoload.php';
 require 'tests/Mock/DriverMock.php';
+require 'tests/EpiCMS/Module/ModuleTesting.php';

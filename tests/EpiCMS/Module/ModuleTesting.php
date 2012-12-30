@@ -1,24 +1,45 @@
 <?php
 
-use EpiCMS\Module\Front;
+//use EpiCMS\Module\Api;
 use EpiCMS\Box;
 
-class EpiCMS_Module_FrontTest extends EpiCMS_Module_ModuleTesting {
+abstract class EpiCMS_Module_ModuleTesting extends PHPUnit_Framework_TestCase {
 
-    public function testGetRouteStatus() {
-        $this->checkStatusCode('GET', '/', 200);
+    abstract public function getObj();
+
+    public function checkStatusCode($method, $route, $status) {
+        $app = $this->slimMock($method, $route);
+        $app->add($this->getObj());
+        $app->run();
+        $this->assertEquals($status, $app->response()->status());
     }
 
-    public function testGetRouteStatusOtherPage() {
-        $this->checkStatusCode('GET', '/test-page', 200);
+    public function checkOutput($method, $route, $output) {
+        $app = $this->slimMock($method, $route);
+        $app->add($this->getObj());
+        $app->run();
+        $this->assertEquals($output, $app->response()->body());
     }
 
-    public function testGetRouteStatusNonExistsPage() {
-        $this->checkStatusCode('GET', '/test-page-non-exist', 404);
+    public function setUp() {
+        Box::driver(new DriverMock);
+        ob_start();
     }
 
-    public function getObj() {
-        return new Front();
+    public function tearDown() {
+        ob_clean();
+    }
+
+    public function prepareMock() {
+        $app = $this->getMock('\Slim\Slim', array('render'), array(array(
+            'log.writer' => new \Slim\LogWriter(fopen('php://stderr', 'w')),
+        )));
+
+        $app->expects($this->any())
+            ->method('render')
+            ->with(null, $this->arrayHasKey('page'));
+
+        return $app;
     }
 
     private function slimMock($method, $route) {
@@ -43,13 +64,7 @@ class EpiCMS_Module_FrontTest extends EpiCMS_Module_ModuleTesting {
             'slim.errors' => NULL,
         ));
 
-        $app = $this->getMock('\Slim\Slim', array('render'), array(array(
-            'log.writer' => new \Slim\LogWriter(fopen('php://stderr', 'w')),
-        )));
-
-        $app->expects($this->any())
-            ->method('render')
-            ->with(null, $this->arrayHasKey('page'));
+        $app = $this->prepareMock();
 
         $app->setName(md5($method.$route));
         return $app;
