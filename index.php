@@ -11,9 +11,14 @@ $app->config('system.users', array(
     'admin' => 'demo',
 ));
 
+\Strong\Strong::factory(array(
+    'provider' => 'Hashtable',
+    'users' => $app->config('system.users'),
+));
+
+$app->add(new \EpiCMS\Module\Front());
 $app->add(new \EpiCMS\Module\Api());
 $app->add(new \EpiCMS\Module\EditAll());
-$app->add(new \EpiCMS\Module\Front());
-
+$app->add(new \EpiCMS\Module\Auth());
 
 $app->run();

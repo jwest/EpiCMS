@@ -7,18 +7,20 @@ abstract class EpiCMS_Module_ModuleTesting extends PHPUnit_Framework_TestCase {
 
     abstract public function getObj();
 
-    public function checkStatusCode($method, $route, $status) {
-        $app = $this->slimMock($method, $route);
+    public function checkStatusCode($method, $route, $status, $input = '') {
+        $app = $this->slimMock($method, $route, $input);
         $app->add($this->getObj());
         $app->run();
         $this->assertEquals($status, $app->response()->status());
+        return $app;
     }
 
-    public function checkOutput($method, $route, $output) {
-        $app = $this->slimMock($method, $route);
+    public function checkOutput($method, $route, $output, $input = '') {
+        $app = $this->slimMock($method, $route, $input);
         $app->add($this->getObj());
         $app->run();
         $this->assertEquals($output, $app->response()->body());
+        return $app;
     }
 
     public function setUp() {
@@ -42,7 +44,7 @@ abstract class EpiCMS_Module_ModuleTesting extends PHPUnit_Framework_TestCase {
         return $app;
     }
 
-    private function slimMock($method, $route) {
+    private function slimMock($method, $route, $input = '') {
         \Slim\Environment::mock(array(
             'REQUEST_METHOD' => $method,
             'REMOTE_ADDR' => '127.0.0.1',
@@ -60,7 +62,7 @@ abstract class EpiCMS_Module_ModuleTesting extends PHPUnit_Framework_TestCase {
             'ACCEPT_LANGUAGE' => 'pl,af;q=0.8,en;q=0.6',
             'ACCEPT_CHARSET' => 'ISO-8859-2,utf-8;q=0.7,*;q=0.3',
             'slim.url_scheme' => 'http',
-            'slim.input' => '',
+            'slim.input' => $input,
             'slim.errors' => NULL,
         ));
 

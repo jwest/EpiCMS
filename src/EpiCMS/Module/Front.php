@@ -7,7 +7,7 @@ use EpiCMS\Box;
 class Front extends \Slim\Middleware {
 
     public function call() {
-        $this->app->get('/(:page)', array($this, 'get'));
+        $this->app->get('/(:page)', array($this, 'get'))->name('home');
         $this->next->call();
     }
 

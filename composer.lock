@@ -1,5 +1,5 @@
 {
-    "hash": "259b83bedc4cae3b0c1714c1eabc4c18",
+    "hash": "607ab577ad37bdf943e80deecd406f80",
     "packages": [
         {
             "name": "slim/slim",
@@ -44,6 +44,54 @@
                 "rest",
                 "router"
             ]
+        },
+        {
+            "name": "slim/strong",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/silentworks/Strong",
+                "reference": "1af2dc2f49f14521bda280a3b91c8fef54f67fc0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/silentworks/Strong/archive/1af2dc2f49f14521bda280a3b91c8fef54f67fc0.zip",
+                "reference": "1af2dc2f49f14521bda280a3b91c8fef54f67fc0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "time": "2012-12-31 10:57:13",
+            "type": "library",
+            "installation-source": "source",
+            "autoload": {
+                "psr-0": {
+                    "Strong": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andrew Smith",
+                    "email": "a.smith@silentworks.co.uk",
+                    "homepage": "http://www.silentworks.co.uk/"
+                },
+                {
+                    "name": "Jakub Westfalewski",
+                    "email": "jwest@jwest.pl",
+                    "homepage": "http://jwest.pl/"
+                }
+            ],
+            "description": "Authentication Library with multiple drivers",
+            "homepage": "http://github.com/silentworks/Strong",
+            "keywords": [
+                "Authentication",
+                "extensions"
+            ]
         }
     ],
     "packages-dev": null,
@@ -51,7 +99,7 @@
 
     ],
     "minimum-stability": "dev",
-    "stability-flags": [
-
-    ]
+    "stability-flags": {
+        "slim/strong": 20
+    }
 }
