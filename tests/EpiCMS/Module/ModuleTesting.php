@@ -11,6 +11,9 @@ abstract class EpiCMS_Module_ModuleTesting extends PHPUnit_Framework_TestCase {
         $app = $this->slimMock($method, $route, $input);
         $app->add($this->getObj());
         $app->run();
+        if ($route == '/admin/test'){
+//            var_dump($app->request(), $this->getObj());exit;
+        }
         $this->assertEquals($status, $app->response()->status());
         return $app;
     }

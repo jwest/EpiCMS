@@ -49,10 +49,24 @@ class EpiCMS_Module_AuthTest extends EpiCMS_Module_ModuleTesting {
         $this->assertEquals('/epicms/admin', $app->response()->header('location'));
     }
 
-    public function prepareMock() {
-        $app = $this->getMock('\Slim\Slim', array('render'), array(array(
+    public function testGetOthenAdminPageUserLogout() {
+        $app = $this->checkStatusCode('GET', '/admin/test', 401);
+    }
+
+    public function prepareMock($mockRedirect = false) {
+        $mockMethods = array('render');
+
+        if ($mockRedirect !== false)
+            $mockMethods[] = 'redirect';
+
+        $app = $this->getMock('\Slim\Slim', $mockMethods, array(array(
             'log.writer' => new \Slim\LogWriter(fopen('php://stderr', 'w')),
         )));
+
+        if ($mockRedirect !== false)
+            $app->expects($this->any())
+                ->method('redirect')
+                ->with($mockRedirect);
 
         $app->expects($this->any())
             ->method('render')

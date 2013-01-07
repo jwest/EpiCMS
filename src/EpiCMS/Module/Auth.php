@@ -11,7 +11,22 @@ class Auth extends \Slim\Middleware {
         $this->app->post('/admin', array($this, 'post'));
         $this->app->get('/admin', array($this, 'get'))->name('auth');
         $this->app->get('/admin/logout', array($this, 'logout'))->name('logout');
-        $this->next->call();
+        if (!$this->checkLogin())
+            $this->fail();
+        else
+            $this->next->call();
+    }
+
+    public function checkLogin() {
+        if (strpos($this->app->request()->getPathInfo(), '/admin/') === 0) {
+            if (!Strong::getInstance()->loggedIn())
+                return false;
+        }
+        return true;
+    }
+
+    protected function fail() {
+        $this->app->response()->status(401);
     }
 
     public function post() {
