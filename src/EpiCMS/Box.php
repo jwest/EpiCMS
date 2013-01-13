@@ -2,6 +2,8 @@
 
 namespace EpiCMS;
 
+use \EpiCMS\View\Formatter;
+
 class Box {
 
     const TEXT = '\EpiCMS\Box\Text';
@@ -12,21 +14,16 @@ class Box {
     protected $value;
 
     public static function __callStatic($type, array $args) {
+        $type = '\\EpiCMS\\Box\\'.ucfirst($type);
         self::validation($type, $args);
-        $typeClass = constant(self::prepareClassName($type));
-        return new $typeClass($args[0], isset($args[1]) ? $args[1] : null);
+        return new $type($args[0], isset($args[1]) ? $args[1] : null);
     }
 
-    protected static function validation($type, array $args) {
-        $typeClass = self::prepareClassName($type);
-        if (!defined($typeClass))
-            throw new \InvalidArgumentException('invalid box type: \''.$typeClass.'\'');
+    protected static function validation($type, array $args) {        
+        if (!class_exists($type))
+            throw new \InvalidArgumentException('invalid box type: \''.$type.'\'');
         if (count($args) < 1)
             throw new \InvalidArgumentException('invalid parameters count');
-    }
-
-    protected static function prepareClassName($type) {
-        return '\\EpiCMS\\Box::'.strtoupper($type);
     }
 
     protected function __construct($key, $value = null) {
@@ -61,7 +58,7 @@ class Box {
     }
 
     public function __toString() {
-        return (string) $this->value();
+        return (string) self::$formatter->box($this);
     }
 
     protected function load($key) {
@@ -86,10 +83,17 @@ class Box {
     }
 
     protected static $driver = null;
+    protected static $formatter = null;
 
     public static function driver(Driver $driver = null) {
         if ($driver !== null)
             self::$driver = $driver;
         return self::$driver;
+    }
+
+    public static function formatter(Formatter $formatter = null) {
+        if ($formatter !== null)
+            self::$formatter = $formatter;
+        return self::$formatter;
     }
 }

@@ -1,6 +1,8 @@
 <?php
 
 use EpiCMS\Box;
+use EpiCMS\View\Formatter\Plain;
+use EpiCMS\View\Formatter\Editable;
 
 class EpiCMS_BoxTest extends PHPUnit_Framework_TestCase {
 
@@ -14,13 +16,18 @@ class EpiCMS_BoxTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testCreateInstanceInvalidType() {
-        $this->setExpectedException('\InvalidArgumentException', 'invalid box type: \'\EpiCMS\Box::NONEXISTSBOXTYPE\'');
+        $this->setExpectedException('\InvalidArgumentException', 'invalid box type: \'\EpiCMS\Box\NonExistsBoxType\'');
         $box = Box::nonExistsBoxType('namespace:test-1');
     }
 
     public function testSetDriver() {
         Box::driver(new DriverMock);
         $this->assertInstanceOf('EpiCMS\Driver', Box::driver());
+    }
+
+    public function testSetFormatter() {
+        Box::formatter(new Plain);
+        $this->assertInstanceOf('EpiCMS\View\Formatter', Box::formatter());   
     }
 
     public function testGetKey() {
@@ -56,6 +63,12 @@ class EpiCMS_BoxTest extends PHPUnit_Framework_TestCase {
     public function testToString() {
         $box = Box::undefined('namespace:test-1');
         $this->assertEquals('test', $box->__toString());
+    }
+
+    public function testToStringUseFormatter() {
+        Box::formatter(new Editable);
+        $box = Box::undefined('namespace:test-1');
+        $this->assertEquals('<span class="editable" data-type="undefined" data-pk="57fff4d8afd10c02f6913a9523130a67">test</span>', $box->__toString());
     }
 
     public function testSetValue() {
