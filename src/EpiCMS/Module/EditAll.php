@@ -13,7 +13,7 @@ class EditAll extends \Slim\Middleware {
     }
 
     public function get() {
-        $boxes = new Boxes('*');
+        $boxes = new Boxes('*');        
         if ($this->app->request()->isAjax()) {
             $this->app->response()->body(json_encode(array(
                 'boxes' => $boxes,

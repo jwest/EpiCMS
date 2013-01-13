@@ -5,6 +5,7 @@ namespace EpiCMS;
 class Box {
 
     const TEXT = '\EpiCMS\Box\Text';
+    const TEXTAREA = '\EpiCMS\Box\Textarea';
     const UNDEFINED = '\EpiCMS\Box\Undefined';
 
     protected $key;
@@ -67,9 +68,8 @@ class Box {
         $output = self::driver()->get($key);
         if ($output === null)
             return;
-        $this->value = $output->value;
-        if ($output->_type !== 'undefined')
-            $this->type = $output->_type;
+        $this->value = $output->value;        
+        return $output;
     }
 
     public function save() {

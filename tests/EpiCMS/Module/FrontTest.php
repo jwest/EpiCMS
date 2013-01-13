@@ -10,11 +10,15 @@ class EpiCMS_Module_FrontTest extends EpiCMS_Module_ModuleTesting {
     }
 
     public function testGetRouteStatusOtherPage() {
-        $this->checkStatusCode('GET', '/test-page', 200);
+        $this->checkStatusCode('GET', '/page:test-page', 200);
     }
 
     public function testGetRouteStatusNonExistsPage() {
-        $this->checkStatusCode('GET', '/test-page-non-exist', 404);
+        $this->checkStatusCode('GET', '/page:test-page-non-exist', 404);
+    }
+
+    public function testGetRouteStatusFromInvalidKey() {
+        $this->checkStatusCode('GET', '/test-key-invalid', 404);
     }
 
     public function getObj() {
