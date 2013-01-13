@@ -11,8 +11,10 @@ class Front extends \Slim\Middleware {
         $this->next->call();
     }
 
-    public function get($page = 'main') {
-        $page = Box::text('page:'.$page);
+    public function get($page = 'page:main') {
+        if (substr($page, 0, 4) !== 'page')
+            $this->app->notFound();
+        $page = Box::text($page);        
         if ($page->value() === null)
             $this->app->notFound();
         $this->app->render($this->app->config('layout.default'), array('page' => $page));

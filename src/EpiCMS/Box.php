@@ -65,9 +65,11 @@ class Box {
 
     protected function load($key) {
         $output = self::driver()->get($key);
-        $this->value = $output['value'];
-        if ($output['_type'] !== 'undefined')
-            $this->type = $output['_type'];
+        if ($output === null)
+            return;
+        $this->value = $output->value;
+        if ($output->_type !== 'undefined')
+            $this->type = $output->_type;
     }
 
     public function save() {

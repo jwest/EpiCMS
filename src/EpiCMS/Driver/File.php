@@ -23,7 +23,13 @@ class File extends \EpiCMS\Driver {
         $keys = array_filter(array_keys($this->data), function ($element) use ($pattern){
             return (bool)preg_match($pattern, $element);
         });
-        return array_intersect_key($this->data, array_flip($keys));
+        return $this->mapEncode(array_intersect_key($this->data, array_flip($keys)));
+    }
+
+    public function mapEncode($items) {
+        return array_map(function($item) { 
+            return json_decode($item); 
+        }, $items);   
     }
 
     public function set($key, array $value = null) {

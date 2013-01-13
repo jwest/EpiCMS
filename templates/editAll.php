@@ -41,12 +41,15 @@
             <tr>
                 <th>Key</th>
                 <th>Value</th>
-            </tr>
-            <?php foreach($boxes as $key => $value): ?>
-                <?php $box = Box::prepare($key, $value) ?>
+            </tr>            
+            <?php foreach($boxes as $box): ?>                
                 <tr>
                     <td class="key"><span><?php echo $box->key(); ?></span></td>
-                    <td class="value"><span><?php echo $box->value(); ?></span></td>
+                    <td class="value">
+                      <span data-pk="<?php echo $box->key(); ?>" data-type="<?php echo $box->type(); ?>">
+                        <?php echo $box->value(); ?>
+                      </span>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         </table>
@@ -56,14 +59,13 @@
     <script src="/epicms/web/js/bootstrap.min.js"></script>
     <script src="/epicms/web/js/bootstrap-editable.min.js"></script>
     <script>
-        $('table .key').each(function(){
-            var keyParts = $(this).find('span').text().split(':');
-            $(this).parent().find('.value span').editable({
-                type: 'text',
-                url: '/epicms/admin/'+keyParts.shift()+'/'+keyParts.join(':'),
+        $('table .value span').each(function(){
+            var key = $(this).data().pk;
+            var type = $(this).data().type;
+            $(this).editable({
+                url: '/epicms/admin/'+key+'/'+type,
                 pk: 1,
-                placement: 'top',
-                title: 'Enter username'
+                placement: 'bottom'
             });
         });
     </script>

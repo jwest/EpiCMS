@@ -3,6 +3,7 @@
 namespace EpiCMS\Module;
 
 use EpiCMS\Box;
+use EpiCMS\Boxes;
 
 class EditAll extends \Slim\Middleware {
 
@@ -12,7 +13,7 @@ class EditAll extends \Slim\Middleware {
     }
 
     public function get() {
-        $boxes = Box::driver()->dump();
+        $boxes = new Boxes('*');
         if ($this->app->request()->isAjax()) {
             $this->app->response()->body(json_encode(array(
                 'boxes' => $boxes,

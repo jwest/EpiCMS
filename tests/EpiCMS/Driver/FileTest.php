@@ -72,4 +72,11 @@ class EpiCMS_Driver_FileTest extends PHPUnit_Framework_TestCase {
         $driver = new File('tests/data/storage.dat');
         $this->assertCount(3, $driver->search('key*es*'));
     }
+
+    public function testGetAllAndAssertValueAsArray() {
+        $driver = new File('tests/data/storage.dat');
+        $result = $driver->search('key*es*');
+        $this->assertArrayHasKey('key3-test', $result);
+        $this->assertEquals('value3', $result['key3-test']->value);
+    }
 }

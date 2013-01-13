@@ -4,14 +4,18 @@
  */
 class DriverMock extends \EpiCMS\Driver {
 
-    protected $data = array(
-        'namespace:test-1'   => array('_type' => 'undefined', 'value' => 'test'),
-        'namespace2:test-1'  => array('_type' => 'undefined', 'value' => 'test3'),
-        'namespace2:test-2'  => array('_type' => 'undefined', 'value' => 'test4'),
-        'namespace2:test-3'  => array('_type' => 'undefined', 'value' => 'test5'),
-        'page:main'          => array('_type' => 'undefined', 'value' => 'main-page'),
-        'page:test-page'     => array('_type' => 'undefined', 'value' => 'test-page'),
-    );
+    protected $data = array();
+
+    public function __construct() {
+        $this->data = array(
+            'namespace:test-1'   => (object) array('_type' => 'undefined', 'value' => 'test'),
+            'namespace2:test-1'  => (object) array('_type' => 'undefined', 'value' => 'test3'),
+            'namespace2:test-2'  => (object) array('_type' => 'undefined', 'value' => 'test4'),
+            'namespace2:test-3'  => (object) array('_type' => 'undefined', 'value' => 'test5'),
+            'page:main'          => (object) array('_type' => 'text', 'value' => 'main-page'),
+            'page:test-page'     => (object) array('_type' => 'text', 'value' => 'test-page'),
+        );
+    }
 
     public function get($key) {
         return isset($this->data[$key]) ? $this->data[$key] : null;

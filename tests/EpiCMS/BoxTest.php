@@ -77,4 +77,9 @@ class EpiCMS_BoxTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(null, Box::driver()->get('namespace:test-1'));
     }
 
+    // public function testAsHtml() {
+    //     $box = Box::undefined('namespace:test-1');
+    //     $box->asHtml()
+    // }
+
 }

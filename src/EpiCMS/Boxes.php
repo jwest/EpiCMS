@@ -6,24 +6,27 @@ use EpiCMS\Box;
 
 class Boxes extends \ArrayIterator {
 
-    protected $namespace;
-
-    public function __construct($namespace, $pattern = null) {
-        $this->namespace = $namespace;
-        $boxes = $this->load($this->prepareKey($namespace, $pattern));
+    public function __construct($pattern) {
+        $boxes = $this->load($pattern);
         parent::__construct($boxes);
-    }
-
-    protected function prepareKey($namespace, $pattern) {
-        return $namespace . ($pattern != null ? ':' . $pattern : ':') . '*';
     }
 
     protected static function load($key) {
         return Box::driver()->search($key);
     }
 
-    public function current() {
-        return Box::undefined(self::key(), parent::current());
+    public function offsetGet($key) {
+        $current = parent::offsetGet($key);
+        $type = $current->_type;
+        $value = $current->value;
+        return Box::$type($key, $value);
+    }
+
+    public function current() {        
+        $current = parent::current();
+        $type = $current->_type;
+        $value = $current->value;
+        return Box::$type(self::key(), $value);
     }
 
 }
