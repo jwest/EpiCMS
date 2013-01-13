@@ -6,11 +6,11 @@ class EpiCMS_Driver_FileTest extends PHPUnit_Framework_TestCase {
 
     public function setUp() {
         file_put_contents('tests/data/storage.dat', serialize(array(
-            'key1' => 'value1',
-            'key2' => 'value2',
-            'key3-test' => 'value3',
-            'key4-test2' => 'value4',
-            'key5-test3' => 'value5',
+            'key1' => '{"value":"value1"}',
+            'key2' => '{"value":"value2"}',
+            'key3-test' => '{"value":"value3"}',
+            'key4-test2' => '{"value":"value4"}',
+            'key5-test3' => '{"value":"value5"}',
         )));
     }
 
@@ -26,7 +26,9 @@ class EpiCMS_Driver_FileTest extends PHPUnit_Framework_TestCase {
 
     public function testLoadDataFromFile() {
         $driver = new File('tests/data/storage.dat');
-        $this->assertContains('value1', $driver->dump());
+        $dump = $driver->dump();
+        $this->assertArrayHasKey('key1', $dump);
+        $this->assertEquals('value1', $dump['key1']->value);
     }
 
     public function testGetOneNonExistsItem() {
@@ -36,21 +38,21 @@ class EpiCMS_Driver_FileTest extends PHPUnit_Framework_TestCase {
 
     public function testGetOneItem() {
         $driver = new File('tests/data/storage.dat');
-        $this->assertEquals('value1', $driver->get('key1'));
+        $this->assertEquals('value1', $driver->get('key1')->value);
     }
 
     public function testSetItem() {
         $driver = new File('tests/data/storage.dat');
-        $driver->set('key1', 'value-test');
+        $driver->set('key1', array('value'=>'value-test'));
         $driver = new File('tests/data/storage.dat');
-        $this->assertEquals('value-test', $driver->get('key1'));
+        $this->assertEquals('value-test', $driver->get('key1')->value);
     }
 
     public function testCreateItem() {
         $driver = new File('tests/data/storage.dat');
-        $driver->set('key2', 'value-test');
+        $driver->set('key2', array('value' => 'value-test'));
         $driver = new File('tests/data/storage.dat');
-        $this->assertEquals('value-test', $driver->get('key2'));
+        $this->assertEquals('value-test', $driver->get('key2')->value);
         $this->assertCount(5, $driver->dump());
     }
 

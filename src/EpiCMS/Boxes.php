@@ -18,12 +18,12 @@ class Boxes extends \ArrayIterator {
         return $namespace . ($pattern != null ? ':' . $pattern : ':') . '*';
     }
 
-    protected function load($key) {
+    protected static function load($key) {
         return Box::driver()->search($key);
     }
 
     public function current() {
-        return Box::prepare(self::key(), parent::current());
+        return Box::undefined(self::key(), parent::current());
     }
 
 }

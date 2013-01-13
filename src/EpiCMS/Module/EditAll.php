@@ -12,9 +12,14 @@ class EditAll extends \Slim\Middleware {
     }
 
     public function get() {
-        $this->app->response()->body(json_encode(array(
-            'boxes' => Box::driver()->dump()
-        )));
+        $boxes = Box::driver()->dump();
+        if ($this->app->request()->isAjax()) {
+            $this->app->response()->body(json_encode(array(
+                'boxes' => $boxes,
+            )));
+        } else {
+            $this->app->render('editAll.php', array('boxes' => $boxes));
+        }
     }
 
 }

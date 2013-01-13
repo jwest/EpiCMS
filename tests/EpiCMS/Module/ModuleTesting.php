@@ -7,19 +7,16 @@ abstract class EpiCMS_Module_ModuleTesting extends PHPUnit_Framework_TestCase {
 
     abstract public function getObj();
 
-    public function checkStatusCode($method, $route, $status, $input = '') {
-        $app = $this->slimMock($method, $route, $input);
+    public function checkStatusCode($method, $route, $status, $input = '', array $params = array()) {
+        $app = $this->slimMock($method, $route, $input, $params);
         $app->add($this->getObj());
         $app->run();
-        if ($route == '/admin/test'){
-//            var_dump($app->request(), $this->getObj());exit;
-        }
         $this->assertEquals($status, $app->response()->status());
         return $app;
     }
 
-    public function checkOutput($method, $route, $output, $input = '') {
-        $app = $this->slimMock($method, $route, $input);
+    public function checkOutput($method, $route, $output, $input = '', array $params = array()) {
+        $app = $this->slimMock($method, $route, $input, $params);
         $app->add($this->getObj());
         $app->run();
         $this->assertEquals($output, $app->response()->body());
@@ -42,13 +39,21 @@ abstract class EpiCMS_Module_ModuleTesting extends PHPUnit_Framework_TestCase {
 
         $app->expects($this->any())
             ->method('render')
-            ->with(null, $this->arrayHasKey('page'));
+            ->with($this->renderTemplateName(), $this->renderParams());
 
         return $app;
     }
 
-    private function slimMock($method, $route, $input = '') {
-        \Slim\Environment::mock(array(
+    public function renderTemplateName() {
+        return null;
+    }
+
+    public function renderParams() {
+        return $this->arrayHasKey('page');
+    }
+
+    private function slimMock($method, $route, $input = '', array $params = array()) {
+        $params = array_merge(array(
             'REQUEST_METHOD' => $method,
             'REMOTE_ADDR' => '127.0.0.1',
             'SCRIPT_NAME' => '/epicms',
@@ -67,7 +72,8 @@ abstract class EpiCMS_Module_ModuleTesting extends PHPUnit_Framework_TestCase {
             'slim.url_scheme' => 'http',
             'slim.input' => $input,
             'slim.errors' => NULL,
-        ));
+        ), $params);
+        \Slim\Environment::mock($params);
 
         $app = $this->prepareMock();
 

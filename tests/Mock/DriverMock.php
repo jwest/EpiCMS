@@ -5,12 +5,12 @@
 class DriverMock extends \EpiCMS\Driver {
 
     protected $data = array(
-        'namespace:test-1'   => 'test1',
-        'namespace2:test-1'  => 'test3',
-        'namespace2:test-2' => 'test4',
-        'namespace2:test-3'  => 'test5',
-        'page:main'          => 'main-page',
-        'page:test-page'     => 'test-page',
+        'namespace:test-1'   => array('_type' => 'undefined', 'value' => 'test'),
+        'namespace2:test-1'  => array('_type' => 'undefined', 'value' => 'test3'),
+        'namespace2:test-2'  => array('_type' => 'undefined', 'value' => 'test4'),
+        'namespace2:test-3'  => array('_type' => 'undefined', 'value' => 'test5'),
+        'page:main'          => array('_type' => 'undefined', 'value' => 'main-page'),
+        'page:test-page'     => array('_type' => 'undefined', 'value' => 'test-page'),
     );
 
     public function get($key) {
@@ -29,7 +29,7 @@ class DriverMock extends \EpiCMS\Driver {
         return '/'.str_replace('*', '(.)+', $key).'/';
     }
 
-    public function set($key, $value) {
+    public function set($key, array $value = null) {
         $this->data[$key] = $value;
     }
 

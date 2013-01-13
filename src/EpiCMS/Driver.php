@@ -8,7 +8,7 @@ abstract class Driver {
 
     abstract public function search($key);
 
-    abstract public function set($key, $value);
+    abstract public function set($key, array $value = null);
 
     abstract public function del($key);
 

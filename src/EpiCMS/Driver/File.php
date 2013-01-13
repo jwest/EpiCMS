@@ -15,7 +15,7 @@ class File extends \EpiCMS\Driver {
     }
 
     public function get($key) {
-        return isset($this->data[$key]) ? $this->data[$key] : null;
+        return json_decode(isset($this->data[$key]) ? $this->data[$key] : null);
     }
 
     public function search($key) {
@@ -26,8 +26,8 @@ class File extends \EpiCMS\Driver {
         return array_intersect_key($this->data, array_flip($keys));
     }
 
-    public function set($key, $value) {
-        $this->data[$key] = $value;
+    public function set($key, array $value = null) {
+        $this->data[$key] = json_encode($value);
         $this->save($this->path, $this->data);
     }
 
@@ -37,7 +37,10 @@ class File extends \EpiCMS\Driver {
     }
 
     public function dump() {
-        return $this->data;
+        $output = array_map(function($item){
+            return json_decode($item);
+        }, $this->data);
+        return $output;
     }
 
     protected function load($path) {

@@ -2,63 +2,51 @@
 
 namespace EpiCMS;
 
-abstract class Box {
+class Box {
 
     const TEXT = '\EpiCMS\Box\Text';
     const UNDEFINED = '\EpiCMS\Box\Undefined';
 
-    protected $namespace;
-    protected $name;
     protected $key;
     protected $value;
-
-    public static function prepare($key, $value = null) {
-        $typeName = self::prepareTypeName(get_called_class());
-        $params = explode(':', $key);
-        if (count($params) !== 2)
-            throw new \InvalidArgumentException('invalid key: \''.$key.'\'');
-        return self::$typeName($params[0], $params[1], $value);
-    }
 
     public static function __callStatic($type, array $args) {
         self::validation($type, $args);
         $typeClass = constant(self::prepareClassName($type));
-        return new $typeClass($args[0], $args[1], isset($args[2]) ? $args[2] : null);
+        return new $typeClass($args[0], isset($args[1]) ? $args[1] : null);
     }
 
     protected static function validation($type, array $args) {
         $typeClass = self::prepareClassName($type);
         if (!defined($typeClass))
             throw new \InvalidArgumentException('invalid box type: \''.$typeClass.'\'');
-        if (count($args) < 2)
+        if (count($args) < 1)
             throw new \InvalidArgumentException('invalid parameters count');
-    }
-
-    protected static function prepareTypeName($typeClass) {
-        $typeNameParts = explode('\\', $typeClass);
-        $typeName = strtolower($typeNameParts[count($typeNameParts)-1]);
-        if ($typeName === 'box')
-            return 'undefined';
-        return $typeName;
     }
 
     protected static function prepareClassName($type) {
         return '\\EpiCMS\\Box::'.strtoupper($type);
     }
 
-    public function __construct($namespace, $name, $value = null) {
-        $this->namespace = $namespace;
-        $this->name = $name;
-        $this->key = $this->prepareKey($namespace, $name);
-        $this->value = $value !== null ? $value : $this->load($this->key);
+    protected function __construct($key, $value = null) {
+        $this->type = $this->getTypeName(get_class($this));
+        $this->key = $key;
+        if ($value !== null)
+            $this->value = $value;    
+        else
+            $this->load($this->key);
     }
 
-    public function name() {
-        return $this->name;
+    protected function getTypeName($typeClass) {
+        $typeNameParts = explode('\\', $typeClass);
+        return strtolower($typeNameParts[count($typeNameParts)-1]);
     }
 
-    public function ns() {
-        return $this->namespace;
+    public function type($newType = null) {        
+        if ($newType !== null) {
+            return Box::$newType($this->key, $this->value);
+        }
+        return $this->type;
     }
 
     public function key() {
@@ -71,28 +59,28 @@ abstract class Box {
         return $this->value;
     }
 
-    public function hash() {
-        return md5($this->key.$this->value);
+    public function __toString() {
+        return (string) $this->value();
     }
 
-    public function __toString() {
-        return (string) $this->value;
+    protected function load($key) {
+        $output = self::driver()->get($key);
+        $this->value = $output['value'];
+        if ($output['_type'] !== 'undefined')
+            $this->type = $output['_type'];
     }
 
     public function save() {
-        self::driver()->set($this->key, $this->value);
+        $value = array('_type' => $this->type, 'value' => $this->value);
+        self::driver()->set($this->key, $value);
     }
 
     public function remove() {
         self::driver()->del($this->key);
     }
 
-    protected function prepareKey($namespace, $name) {
-        return $namespace.':'.$name;
-    }
-
-    protected function load($key) {
-        return self::driver()->get($key);
+    public function hash() {
+        return md5($this->key.$this->value);
     }
 
     protected static $driver = null;
